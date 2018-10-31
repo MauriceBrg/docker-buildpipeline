@@ -5,14 +5,14 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sudo docker build -t myjenkins .
+                sh 'sudo docker build -t myjenkins .'
             }
         }
         stage('Test') {
 
         }
         stage('Tag and Upload') {
-            
+
         }
     }
 
