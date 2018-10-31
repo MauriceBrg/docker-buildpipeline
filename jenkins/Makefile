@@ -1,2 +1,2 @@
 build_docker:
-	docker build -t myjenkins .
+	docker build -t jenkins-dockerbuilder .

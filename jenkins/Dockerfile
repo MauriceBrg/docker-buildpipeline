@@ -8,7 +8,8 @@ RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 ENV JENKINS_OPTS \
     --argumentsRealm.passwd.admin=${ADMIN_PASSWORD} \
     --argumentsRealm.roles.user=admin \
-    --argumentsRealm.roles.admin=admin
+    --argumentsRealm.roles.admin=admin \
+    -Djenkins.install.runSetupWizard=false
 
 # Install docker, unfortunately it's not in the debian repositories, so we need to add a repository
 USER root
