@@ -3,9 +3,9 @@
 This is a **test** project. I'm trying to build some containers that contain everything you need in order to automatically build docker containers from source.
 
 # Components
-- *GitLab* as a Git Repository
+- *GitLab* as a Git Repository (TODO)
 - *Jenkins* as the BuildServer
-- *Registry* as a private docker Registry
+- *Registry* as a private docker Registry (TODO)
 
 # Prerequisites
 - Docker (I use 17.12.1-ce)

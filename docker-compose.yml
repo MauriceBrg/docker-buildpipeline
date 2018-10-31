@@ -2,10 +2,8 @@ version: '3'
 services:
 
   # The jenkins build server for our environment
-  # TODO:
-  # - Define the relevant plugins
   jenkins:
-    image: jenkins/jenkins:lts
+    image: jenkins-dockerbuilder
     ports: 
      - "8080"
      - "50000"
@@ -16,9 +14,23 @@ services:
       build_network:
         aliases:
          - jenkins
+    environment:
+     - ADMIN_PASSWORD=ChangeMe!
+  
+  registry:
+    image: registry:2
+    ports:
+     - "5000"
+    volumes:
+     - docker_registry:/var/lib/registry  
+    networks:
+      build_network:
+        aliases:
+          - registry
 
 networks:
   build_network:
 
 volumes: 
   jenkins_home:
+  docker_registry:
