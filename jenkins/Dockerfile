@@ -36,15 +36,12 @@ RUN apt-get update && \
 
 # Now we need to allow jenkins to run docker commands! (This is not elegant, but at least it's semi-portable...)
 
-## allowing jenkins user to run sudo commands
-RUN echo "jenkins ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+## allowing jenkins user to run docker without specifying a password
+RUN echo "jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker" >> /etc/sudoers
 
-## let's make a home directory for jenkins
-RUN mkdir /home/jenkins
-
-## avoid typing sudo in command line
-RUN echo "alias docker='sudo docker '" >> /home/jenkins/.bashrc
-RUN echo "alias docker='sudo docker '" >> $JENKINS_HOME/.bashrc
+# Create our alias file that allows us to use docker as sudo without writing sudo
+COPY docker_sudo_overwrite.sh /usr/local/bin/docker
+RUN chmod +x /usr/local/bin/docker
 
 # switch back to the jenkins-user
 USER jenkins

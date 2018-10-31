@@ -1,17 +1,33 @@
 pipeline {
 
     agent any
+
+    environment {
+        DOCKERFILE_DIR = 'jenkins'
+        IMAGE_NAME = 'myjenkins'
+    }
     
     stages {
         stage('Build') {
             steps {
-                sh 'cd jenkins'
-                sh 'sudo docker build -t myjenkins .'
+
+                // Change to the path where our Dockerfile is located.
+                dir ( env.DOCKERFILE_DIR ){
+
+                    // Run the build
+                    //sh 'sudo docker build -t $IMAGE_NAME .'
+                    script {
+                        def dockerimage = docker.build(env.IMAGENAME)
+                    }
+                    
+                }
+                
             }
         }
         stage('Test') {
             steps {
-                sh 'echo This is my test stage'
+                sh 'echo These are some fancy tests'
+                sh 'env'
             }
         }
         stage('Tag and Upload') {
