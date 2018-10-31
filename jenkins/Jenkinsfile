@@ -5,6 +5,7 @@ pipeline {
     environment {
         DOCKERFILE_DIR = 'jenkins'
         IMAGE_NAME = 'myjenkins'
+        TAG = 'latest'
     }
     
     stages {
@@ -15,9 +16,8 @@ pipeline {
                 dir ( env.DOCKERFILE_DIR ){
 
                     // Run the build
-                    //sh 'sudo docker build -t $IMAGE_NAME .'
                     script {
-                        def dockerimage = docker.build(env.IMAGENAME)
+                        def dockerimage = docker.build("${env.IMAGE_NAME}:${env.TAG}")
                     }
                     
                 }
@@ -27,7 +27,6 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'echo These are some fancy tests'
-                sh 'env'
             }
         }
         stage('Tag and Upload') {
