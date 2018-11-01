@@ -2,10 +2,31 @@ pipeline {
 
     agent any
 
-    environment {
-        DOCKERFILE_DIR = 'jenkins'
-        IMAGE_NAME = 'jenkins-dockerbuilder'
-        TAG = 'latest'
+    // environment {
+
+    // }
+
+    parameters {
+        string(
+            name: "ImageName",
+            defaultValue: "registry.local/jenkins-dockerbuilder",
+            description: "The tag that's applied to the image - this is used to determine if it will/can be uploaded to a docker registry in a later step."
+        )
+        string(
+            name: "Tag",
+            defaultValue: "latest",
+            description: "The tag to apply to this image - usually 'latest' makes sense."
+        )
+        string(
+            name: "DockerfileDirectory",
+            defaultValue: "jenkins",
+            description: "The subdirectory of the repository in which the Dockerfile resides."
+        )        
+        booleanParam(
+            name: "PushImageToRegistry",
+            defaultValue: true,
+            description: "Push the Image to a docker registry (The Image Name must contain a registry)."
+        )
     }
     
     stages {
@@ -13,25 +34,40 @@ pipeline {
             steps {
 
                 // Change to the path where our Dockerfile is located.
-                dir ( env.DOCKERFILE_DIR ){
+                dir ( params.DockerfileDirectory ){
 
                     // Run the build
                     script {
-                        def dockerimage = docker.build("${env.IMAGE_NAME}:${env.TAG}")
+                        def dockerimage = docker.build("${params.ImageName}:${params.Tag}")
                     }
                     
                 }
                 
             }
         }
-        stage('Test') {
-            steps {
-                sh 'echo These are some fancy tests'
-            }
-        }
+        // Not sure if this will ever be necessary, ideally the build process of the
+        // Image should include a test stage.
+        // stage('Test') {
+        //     steps {
+        //         sh 'echo These are some fancy tests'
+        //     }
+        // }
         stage('Tag and Upload') {
+            when {
+                // Only when the upload is enabled
+                expression {
+                    return params.PushImageToRegistry == true
+                }
+            }
             steps {
                 sh 'echo This is my tag and upload stage'
+                // Run the build
+                script {
+
+                    def dockerimage = docker.image("${params.ImageName}:${params.Tag}")
+                    dockerimage.push()
+                  
+                }
             }
         }
     }
